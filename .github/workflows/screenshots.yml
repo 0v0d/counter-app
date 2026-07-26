@@ -1,0 +1,164 @@
+name: Screenshots
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: screenshots-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+env:
+  SCREENSHOT_DIR: app/build/outputs/roborazzi
+  BASELINE_BRANCH: companion_main
+
+jobs:
+  # mainへのpush時: ベースライン画像を記録してcompanionブランチに保存
+  store-baseline:
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Record screenshots
+        run: ./gradlew recordRoborazziDebug
+
+      - name: Push baseline to companion branch
+        run: |
+          cd "$SCREENSHOT_DIR"
+          git init -b "$BASELINE_BRANCH"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ./*.png
+          git commit -m "Baseline screenshots from ${{ github.sha }}"
+          # 毎回git initで履歴なしの使い捨てブランチを作り直すため、force pushで丸ごと置き換える
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$BASELINE_BRANCH"
+
+  # PRの作成・更新時: ベースラインと比較して差分と全スクリーンショットをコメントする
+  compare:
+    if: github.event_name == 'pull_request' && github.event.action != 'closed'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      PR_BRANCH: companion_pr-${{ github.event.pull_request.number }}
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-java@v5
+
+        with:
+          distribution: temurin
+          java-version: 21
+
+      - uses: gradle/actions/setup-gradle@v6
+
+      - name: Restore baseline screenshots
+        run: |
+          mkdir -p "$SCREENSHOT_DIR"
+          if git fetch --depth 1 origin "$BASELINE_BRANCH"; then
+            git archive FETCH_HEAD | tar -x -C "$SCREENSHOT_DIR"
+            echo "Baseline restored"
+          else
+            echo "No baseline branch yet; all screenshots will be treated as new"
+          fi
+
+      - name: Compare screenshots
+        run: ./gradlew compareRoborazziDebug
+
+      # 比較後に再recordして、プレーンなpngを「現在のスクリーンショット」にする
+      # (差分画像 *_compare.png はそのまま残る)
+      - name: Record current screenshots
+        run: ./gradlew recordRoborazziDebug
+
+      - name: Publish images to PR companion branch
+        run: |
+          cd "$SCREENSHOT_DIR"
+          git init -b "$PR_BRANCH"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add ./*.png
+          git commit -m "Screenshots for PR #${{ github.event.pull_request.number }}"
+          # 毎回git initで履歴なしの使い捨てブランチを作り直すため、force pushで丸ごと置き換える
+          git push -f "https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git" "$PR_BRANCH"
+
+      - name: Build comment body
+        run: |
+          BASE_URL="https://raw.githubusercontent.com/${{ github.repository }}/$PR_BRANCH"
+          cd "$SCREENSHOT_DIR"
+          shopt -s nullglob
+
+          url() { printf '%s' "$1" | jq -sRr '@uri'; }
+          title() {
+            local name="${1%.png}"
+            name="${name#com.example.counterapp.}"
+            printf '%s' "$name"
+          }
+
+          {
+            echo "## 📸 スクリーンショットレポート"
+            echo ""
+
+            compares=(*_compare.png)
+            if [ "${#compares[@]}" -gt 0 ]; then
+              echo "### ⚠️ 差分あり (${#compares[@]}件)"
+              echo ""
+              for f in "${compares[@]}"; do
+                echo "#### $(title "${f%_compare.png}")"
+                echo "![$f]($BASE_URL/$(url "$f"))"
+                echo ""
+              done
+            else
+              echo "### ✅ 差分はありません"
+              echo ""
+            fi
+
+            echo "<details><summary>📱 全スクリーンショット</summary>"
+            echo ""
+            for f in *.png; do
+              case "$f" in
+                *_compare.png|*_actual.png) continue ;;
+              esac
+              echo "#### $(title "$f")"
+              echo "![$f]($BASE_URL/$(url "$f"))"
+              echo ""
+            done
+            echo "</details>"
+          } > "$RUNNER_TEMP/comment.md"
+
+      - name: Post PR comment
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr comment "${{ github.event.pull_request.number }}" \
+            --repo "${{ github.repository }}" \
+            --body-file "$RUNNER_TEMP/comment.md" \
+            --edit-last --create-if-none
+
+  # PRクローズ時: そのPR用の画像ブランチを削除
+  cleanup:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Delete PR companion branch
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh api -X DELETE \
+            "repos/${{ github.repository }}/git/refs/heads/companion_pr-${{ github.event.pull_request.number }}" \
+            || echo "No companion branch to delete"
