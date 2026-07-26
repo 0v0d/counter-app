@@ -76,6 +76,8 @@ jobs:
           else
             echo "No baseline branch yet; all screenshots will be treated as new"
           fi
+          # コメント生成時に「差分」と「新規」を区別するため、ベースラインのファイル一覧を控えておく
+          ls "$SCREENSHOT_DIR" > "$RUNNER_TEMP/baseline-files.txt"
 
       - name: Compare screenshots
         run: ./gradlew compareRoborazziDebug
@@ -113,11 +115,21 @@ jobs:
             echo "## 📸 スクリーンショットレポート"
             echo ""
 
-            compares=(*_compare.png)
-            if [ "${#compares[@]}" -gt 0 ]; then
-              echo "### ⚠️ 差分あり (${#compares[@]}件)"
+            # ベースラインに存在した画像の差分は「差分あり」、なかった画像は「新規」に分類する
+            changed=()
+            added=()
+            for f in *_compare.png; do
+              if grep -qxF "${f%_compare.png}.png" "$RUNNER_TEMP/baseline-files.txt"; then
+                changed+=("$f")
+              else
+                added+=("$f")
+              fi
+            done
+
+            if [ "${#changed[@]}" -gt 0 ]; then
+              echo "### ⚠️ 差分あり (${#changed[@]}件)"
               echo ""
-              for f in "${compares[@]}"; do
+              for f in "${changed[@]}"; do
                 echo "#### $(title "${f%_compare.png}")"
                 echo "![$f]($BASE_URL/$(url "$f"))"
                 echo ""
@@ -125,6 +137,17 @@ jobs:
             else
               echo "### ✅ 差分はありません"
               echo ""
+            fi
+
+            if [ "${#added[@]}" -gt 0 ]; then
+              echo "### 🆕 新規 (${#added[@]}件)"
+              echo ""
+              for f in "${added[@]}"; do
+                plain="${f%_compare.png}.png"
+                echo "#### $(title "$plain")"
+                echo "![$plain]($BASE_URL/$(url "$plain"))"
+                echo ""
+              done
             fi
 
             echo "<details><summary>📱 全スクリーンショット</summary>"
