@@ -9,7 +9,7 @@
     <string name="Language">言語</string>
     <string name="Light">ライト</string>
     <string name="Reset">リセット</string>
-    <string name="ResetMessage">カウンターをリセットしますか？</string>
+    <string name="ResetMessage">カウンターを0しますか？</string>
     <string name="Settings">設定</string>
     <string name="System">システムデフォルト</string>
     <string name="Theme">テーマ</string>
