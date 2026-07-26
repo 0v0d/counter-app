@@ -110,6 +110,8 @@ jobs:
             name="${name#com.example.counterapp.}"
             printf '%s' "$name"
           }
+          # widthを指定して縮小表示する(クリックで原寸表示できるようリンクにする)
+          img() { echo "<a href=\"$BASE_URL/$(url "$1")\"><img src=\"$BASE_URL/$(url "$1")\" width=\"$2\" /></a>"; }
 
           {
             echo "## 📸 スクリーンショットレポート"
@@ -131,7 +133,7 @@ jobs:
               echo ""
               for f in "${changed[@]}"; do
                 echo "#### $(title "${f%_compare.png}")"
-                echo "![$f]($BASE_URL/$(url "$f"))"
+                img "$f" 700
                 echo ""
               done
             else
@@ -145,7 +147,7 @@ jobs:
               for f in "${added[@]}"; do
                 plain="${f%_compare.png}.png"
                 echo "#### $(title "$plain")"
-                echo "![$plain]($BASE_URL/$(url "$plain"))"
+                img "$plain" 250
                 echo ""
               done
             fi
@@ -157,7 +159,7 @@ jobs:
                 *_compare.png|*_actual.png) continue ;;
               esac
               echo "#### $(title "$f")"
-              echo "![$f]($BASE_URL/$(url "$f"))"
+              img "$f" 250
               echo ""
             done
             echo "</details>"
