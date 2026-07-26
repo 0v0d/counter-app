@@ -18,7 +18,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.example.counterapp.ui.theme.CounterAppTheme
 import com.example.counterapp.view.counter.component.CounterButton
 import com.example.counterapp.view.counter.component.ResetButton
@@ -28,9 +29,9 @@ import com.example.counterapp.viewmodel.CounterViewModel
 @Composable
 fun CounterScreen(
     modifier: Modifier = Modifier,
-    viewModel: CounterViewModel = hiltViewModel(),
+    viewModel: CounterViewModel = hiltViewModel()
 ) {
-    val counter = viewModel.counter.intValue
+    val counter by viewModel.counter.collectAsStateWithLifecycle()
     var showResetConfirmation by remember { mutableStateOf(false) }
 
     Box(
@@ -45,7 +46,7 @@ fun CounterScreen(
         ) {
             // カウンターの表示
             Text(
-                text = counter.toString(),
+                text = counter.value.toString(),
                 style = MaterialTheme.typography.displayLarge,
                 color = MaterialTheme.colorScheme.primary
             )
@@ -55,7 +56,7 @@ fun CounterScreen(
                 onClickDecrement = { viewModel.decrement() }
             )
 
-            if (counter != 0) {
+            if (counter.value != 0) {
                 ResetButton(
                     onClick = { showResetConfirmation = true }
                 )
