@@ -5,7 +5,9 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.example.counterapp.R
+import com.example.counterapp.ui.theme.CounterAppTheme
 
 @Composable
 fun ResetConfirmationDialog(
@@ -29,4 +31,15 @@ fun ResetConfirmationDialog(
             }
         }
     )
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun Preview() {
+    CounterAppTheme {
+        ResetConfirmationDialog(
+            onConfirm = {},
+            onDismiss = {}
+        )
+    }
 }
