@@ -5,4 +5,12 @@ plugins {
     alias(libs.plugins.dagger.hilt.android) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.serialization) apply false
+    alias(libs.plugins.detekt)
+}
+
+detekt {
+    source.setFrom(files("app/src/main/java", "app/src/test/java", "app/src/androidTest/java"))
+    config.setFrom(files("config/detekt/detekt.yml"))
+    buildUponDefaultConfig = true
+    basePath.set(rootDir)
 }
