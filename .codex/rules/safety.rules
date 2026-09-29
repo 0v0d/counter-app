@@ -84,14 +84,13 @@ prefix_rule(
     justification = "PR のマージはレビュー後に手動で行ってください。",
 )
 
-# --- 自動で許可（サンドボックス外で実行） ---
+# --- 承認が必要 ---
 prefix_rule(
     pattern = ["git", "push"],
-    decision = "allow",
-    justification = "push は認証情報とネットワークが必要なため、サンドボックス外で確認なしに実行します。main は GitHub のルールセットで強制 push・削除・直接 push から保護されています。",
+    decision = "prompt",
+    justification = "後置オプションや refspec による強制 push・削除を先頭一致では検出できないため、すべての push で引数と送信先の確認が必要です。",
 )
 
-# --- 承認が必要 ---
 prefix_rule(
     pattern = ["git", "commit"],
     decision = "prompt",
