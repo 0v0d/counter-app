@@ -46,6 +46,10 @@ android {
             isIncludeAndroidResources = true
         }
     }
+    lint {
+        // reviewdog が読み取って PR にコメントする
+        sarifReport = true
+    }
 }
 
 dependencies {
