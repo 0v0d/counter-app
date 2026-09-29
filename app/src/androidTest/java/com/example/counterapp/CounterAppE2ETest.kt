@@ -7,6 +7,7 @@ import androidx.compose.ui.test.assertIsSelected
 import androidx.compose.ui.test.hasAnyAncestor
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.isDialog
+import androidx.compose.ui.test.isSelected
 import androidx.compose.ui.test.junit4.v2.createAndroidComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
@@ -33,6 +34,17 @@ class CounterAppE2ETest {
 
     private fun clickDecrement(times: Int = 1) = repeat(times) {
         composeRule.onNodeWithContentDescription("Decrement").performClick()
+    }
+
+    private fun selectTheme(@StringRes themeId: Int) {
+        val theme = getString(themeId)
+        composeRule.onNodeWithText(theme).performClick()
+
+        // DataStore の非同期更新が画面に反映されるまで待つ。
+        composeRule.waitUntil(timeoutMillis = 5_000) {
+            composeRule.onAllNodes(hasText(theme) and isSelected())
+                .fetchSemanticsNodes().isNotEmpty()
+        }
     }
 
     @Test
@@ -112,12 +124,14 @@ class CounterAppE2ETest {
     fun 設定画面でテーマを切り替えられる() {
         composeRule.onNodeWithText(getString(R.string.Settings)).performClick()
 
-        composeRule.onNodeWithText(getString(R.string.Dark)).performClick()
+        // 前回のテストで保存されたテーマに左右されないよう初期状態を揃える。
+        selectTheme(R.string.System)
+        selectTheme(R.string.Dark)
         composeRule.onNodeWithText(getString(R.string.Dark)).assertIsSelected()
         composeRule.onNodeWithText(getString(R.string.System)).assertIsNotSelected()
 
         // 端末のDataStoreに永続化されるためデフォルトのSystemに戻す
-        composeRule.onNodeWithText(getString(R.string.System)).performClick()
+        selectTheme(R.string.System)
         composeRule.onNodeWithText(getString(R.string.System)).assertIsSelected()
     }
 }

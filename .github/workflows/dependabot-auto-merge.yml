@@ -1,0 +1,45 @@
+name: Dependabot auto-merge
+
+on:
+  pull_request_target:
+    branches: [main]
+    types: [opened, reopened, synchronize, ready_for_review]
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  enable-auto-merge:
+    if: >-
+      github.repository == '0v0d/counter-app' &&
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository &&
+      !github.event.pull_request.draft
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      # 書き込み権限を持つ workflow のため、PR のメタデータだけを読み、PR のコードは checkout も実行もしない
+      - name: Read Dependabot metadata
+        id: metadata
+        uses: dependabot/fetch-metadata@v3
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Enable auto-merge for minor and patch updates
+        if: >-
+          steps.metadata.outputs.update-type == 'version-update:semver-minor' ||
+          steps.metadata.outputs.update-type == 'version-update:semver-patch'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          PR_HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          # CI の完了を待つ設定がリポジトリにない場合は、自動マージを設定せずに失敗させる
+          gh api "repos/$GITHUB_REPOSITORY" --jq '.allow_auto_merge' | grep -qx true
+          gh api "repos/$GITHUB_REPOSITORY/rules/branches/main" | jq -e '
+            [.[] | select(.type == "required_status_checks") |
+              .parameters.required_status_checks[].context] as $checks |
+            (["gitleaks", "detekt", "lint-and-unit-tests", "compare"] - $checks | length) == 0
+          '
+          gh pr merge --auto --squash --match-head-commit "$PR_HEAD_SHA" "$PR_URL"

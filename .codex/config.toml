@@ -1,0 +1,16 @@
+approval_policy = "on-request"
+sandbox_mode = "workspace-write"
+
+[sandbox_workspace_write]
+network_access = false
+# 共有の /tmp は書き込み不可にする
+exclude_slash_tmp = true
+# JVM（Gradle・Kotlin）などは $TMPDIR に一時ファイルを書くため書き込みを許可する
+# （macOS の $TMPDIR はユーザーごとのディレクトリ）
+exclude_tmpdir_env_var = false
+
+[shell_environment_policy]
+# PATH・HOME など最低限の環境変数だけを渡す（Java は PATH 上の Homebrew 版を使う）
+inherit = "core"
+# 名前に KEY・SECRET・TOKEN を含む環境変数を除外する
+ignore_default_excludes = false
