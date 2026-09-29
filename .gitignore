@@ -13,3 +13,7 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Gitleaks scan report
+/report.json
+/.idea
