@@ -1,0 +1,29 @@
+version: 2
+updates:
+  - package-ecosystem: gradle
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '03:00'
+      timezone: Asia/Tokyo
+    open-pull-requests-limit: 5
+    groups:
+      gradle-minor-patch:
+        update-types: [minor, patch]
+    commit-message:
+      prefix: 'deps'
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: '03:00'
+      timezone: Asia/Tokyo
+    open-pull-requests-limit: 5
+    groups:
+      actions-minor-patch:
+        update-types: [minor, patch]
+    commit-message:
+      prefix: 'ci'
