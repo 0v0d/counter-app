@@ -1,33 +1,33 @@
-# Gradle files
+# Gradle のファイル
 .gradle/
 build/
 
-# Local configuration file (sdk path, etc)
+# ローカル設定ファイル（SDK のパスなど）
 local.properties
 
-# Log/OS Files
+# ログ・OS のファイル
 *.log
 
-# Android Studio generated files and folders
+# Android Studio が生成するファイルとフォルダ
 captures/
 .externalNativeBuild/
 .cxx/
 *.apk
 output.json
 
-# IntelliJ
+# IntelliJ の設定
 *.iml
 .idea/
 misc.xml
 deploymentTargetDropDown.xml
 render.experimental.xml
 
-# Keystore files
+# キーストア
 *.jks
 *.keystore
 
-# Google Services (e.g. APIs or Firebase)
+# Google サービスの設定（API・Firebase など）
 google-services.json
 
-# Android Profiling
+# Android のプロファイリング結果
 *.hprof

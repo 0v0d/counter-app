@@ -1,21 +1,17 @@
-# Add project specific ProGuard rules here.
-# You can control the set of applied configuration files using the
-# proguardFiles setting in build.gradle.
+# プロジェクト固有の ProGuard ルールをここに追加する。
+# 適用する設定ファイルは build.gradle の proguardFiles で指定できる。
 #
-# For more details, see
+# 詳しくは次を参照:
 #   http://developer.android.com/guide/developing/tools/proguard.html
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
+# WebView で JavaScript を使う場合は、次のコメントを外して
+# JavaScript インターフェースのクラスを完全修飾名で指定する:
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
+# デバッグ用のスタックトレースに行番号を残す場合は、次のコメントを外す。
 #-keepattributes SourceFile,LineNumberTable
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
+# 行番号を残す場合に元のソースファイル名を隠すには、次のコメントを外す。
 #-renamesourcefileattribute SourceFile

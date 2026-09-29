@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?><!--
-   Sample backup rules file; uncomment and customize as necessary.
-   See https://developer.android.com/guide/topics/data/autobackup
-   for details.
-   Note: This file is ignored for devices older that API 31
-   See https://developer.android.com/about/versions/12/backup-restore
+   バックアップルールのサンプル。必要に応じてコメントを外して調整する。
+   詳しくは https://developer.android.com/guide/topics/data/autobackup を参照。
+   注: このファイルは Android 11（API 30）以前でのみ使われる。
+   Android 12 以降は data_extraction_rules.xml が使われる。
+   https://developer.android.com/about/versions/12/backup-restore を参照。
 -->
 <full-backup-content>
     <!--
