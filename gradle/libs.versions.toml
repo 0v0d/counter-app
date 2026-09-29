@@ -8,6 +8,7 @@ dagger = "2.60.1"
 detekt = "2.0.0-alpha.6"
 datastorePreferences = "1.2.1"
 hiltNavigationCompose = "1.4.0"
+kover = "0.9.10"
 kotlin = "2.4.10"
 kotlinxSerializationJson = "1.11.0"
 ksp = "2.3.4"
@@ -65,3 +66,4 @@ dagger-hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "da
 serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 roborazzi = { id = "io.github.takahirom.roborazzi", version.ref = "roborazzi" }
 detekt = { id = "dev.detekt", version.ref = "detekt" }
+kover = { id = "org.jetbrains.kotlinx.kover", version.ref = "kover" }

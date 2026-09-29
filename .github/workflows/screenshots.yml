@@ -116,6 +116,8 @@ jobs:
           img() { echo "<a href=\"$BASE_URL/$(url "$1")\"><img src=\"$BASE_URL/$(url "$1")\" width=\"$2\" /></a>"; }
 
           {
+            # Post PR commentで自分のコメントを見つけるための目印
+            echo "<!-- screenshots-report -->"
             echo "## 📸 スクリーンショットレポート"
             echo ""
 
@@ -171,11 +173,18 @@ jobs:
         if: github.event.pull_request.user.login != 'dependabot[bot]' && github.event.pull_request.head.repo.full_name == github.repository
         env:
           GH_TOKEN: ${{ github.token }}
+          COMMENTS_URL: repos/${{ github.repository }}/issues/${{ github.event.pull_request.number }}/comments
         run: |
-          gh pr comment "${{ github.event.pull_request.number }}" \
-            --repo "${{ github.repository }}" \
-            --body-file "$RUNNER_TEMP/comment.md" \
-            --edit-last --create-if-none
+          # --edit-lastは直近のbotコメント(カバレッジ等)を上書きしてしまうため、目印で自分のコメントを探して更新する
+          comment_id=$(gh api --paginate "$COMMENTS_URL" \
+            --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- screenshots-report -->"))) | .id' \
+            | tail -n 1)
+          if [ -n "$comment_id" ]; then
+            gh api -X PATCH "repos/${{ github.repository }}/issues/comments/$comment_id" \
+              -F body=@"$RUNNER_TEMP/comment.md" > /dev/null
+          else
+            gh api "$COMMENTS_URL" -F body=@"$RUNNER_TEMP/comment.md" > /dev/null
+          fi
 
       - name: Upload screenshot results
         if: ${{ !cancelled() }}

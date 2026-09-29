@@ -5,6 +5,7 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.serialization)
     alias(libs.plugins.roborazzi)
+    alias(libs.plugins.kover)
 }
 
 android {
@@ -49,6 +50,31 @@ android {
     lint {
         // reviewdog が読み取って PR にコメントする
         sarifReport = true
+    }
+}
+
+kover {
+    reports {
+        filters {
+            excludes {
+                // Hilt と Compose コンパイラーが生成するコードで、直接テストする対象ではない
+                classes(
+                    "*.Hilt_*",
+                    "*_Factory\$InstanceHolder",
+                    "*_HiltModules*",
+                    "*_ComponentTreeDeps",
+                    "*_HiltComponents*",
+                    "*.ComposableSingletons*",
+                    "*.BuildConfig",
+                    "dagger.hilt.internal.*",
+                    "hilt_aggregated_deps.*",
+                )
+                annotatedBy(
+                    "dagger.internal.DaggerGenerated",
+                    "androidx.compose.ui.tooling.preview.Preview",
+                )
+            }
+        }
     }
 }
 
