@@ -1,0 +1,16 @@
+#!/bin/sh
+# コミット前に CI と同じ検査（detekt・Android Lint・UNIT）を実行する。
+# クローンごとに一度、またこのファイルを変更したときにコピーする:
+#   cp .githooks/pre-commit .git/hooks/pre-commit
+# core.hooksPath を使わずコピーするのは、コーディングエージェントが .githooks/ には
+# 書き込めても .git/hooks/ には書き込めず、コミット時に実行される内容を変えられないようにするため。
+# 一度だけ省略する: git commit --no-verify
+set -eu
+
+# ドキュメントのみなど、検査結果に影響しないコミットでは実行しない
+if ! git diff --cached --name-only | grep -qE '^(app/|config/detekt/|gradle/)|\.kts$|^gradle\.properties$'; then
+  exit 0
+fi
+
+echo "pre-commit: detekt・Android Lint・UNIT を実行します..."
+./gradlew detekt :app:lintDebug :app:testDebugUnitTest --tests '*UnitTest' --continue --quiet
