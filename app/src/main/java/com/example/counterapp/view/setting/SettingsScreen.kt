@@ -16,14 +16,11 @@ import com.example.counterapp.view.setting.component.SettingsContent
 import com.example.counterapp.viewmodel.SettingsViewModel
 
 @Composable
-fun SettingsScreen(
-    modifier: Modifier = Modifier,
-    viewModel: SettingsViewModel = hiltViewModel()
-) {
+fun SettingsScreen(modifier: Modifier = Modifier, viewModel: SettingsViewModel = hiltViewModel()) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .padding(16.dp)
+            .padding(16.dp),
     ) {
         val themeConfig by viewModel.userConfig.collectAsState()
         SettingsContent(
@@ -39,7 +36,7 @@ private fun Preview() {
     CounterAppTheme {
         SettingsContent(
             themeConfig = ThemeConfig.Dark,
-            onChangeThemeConfig = { }
+            onChangeThemeConfig = { },
         )
     }
 }

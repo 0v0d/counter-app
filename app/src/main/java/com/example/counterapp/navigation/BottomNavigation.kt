@@ -20,10 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.counterapp.R
 
 @Composable
-fun BottomNavigation(
-    navController: NavHostController,
-    modifier: Modifier = Modifier
-) {
+fun BottomNavigation(navController: NavHostController, modifier: Modifier = Modifier) {
     val views = remember {
         listOf(
             NavItem.Counter,
@@ -45,7 +42,7 @@ fun BottomNavigation(
                         launchSingleTop = true
                         restoreState = true
                     }
-                }
+                },
             )
         }
     }

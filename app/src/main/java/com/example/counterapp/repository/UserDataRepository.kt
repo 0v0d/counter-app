@@ -10,11 +10,9 @@ interface UserDataRepository {
     suspend fun setThemeConfig(themeConfig: ThemeConfig)
 }
 
-class UserDataRepositoryImpl @Inject constructor(
-    private val userPreference: UserPreference
-) : UserDataRepository {
+class UserDataRepositoryImpl @Inject constructor(private val userPreference: UserPreference) : UserDataRepository {
     override val userConfig: Flow<ThemeConfig> = userPreference.userData
-    
+
     override suspend fun setThemeConfig(themeConfig: ThemeConfig) {
         userPreference.setThemeConfig(themeConfig)
     }

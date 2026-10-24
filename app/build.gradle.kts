@@ -6,6 +6,14 @@ plugins {
     alias(libs.plugins.serialization)
     alias(libs.plugins.roborazzi)
     alias(libs.plugins.kover)
+    alias(libs.plugins.ktlint)
+}
+
+ktlint {
+    version.set(libs.versions.ktlint)
+    filter {
+        exclude("**/build/**")
+    }
 }
 
 android {
@@ -31,7 +39,7 @@ android {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -104,10 +112,10 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
 
     testImplementation(libs.junit)
-    testImplementation (libs.androidx.ui.test.junit4)
-    testImplementation (libs.robolectric)
-    testImplementation (libs.roborazzi)
-    testImplementation (libs.roborazzi.compose)
+    testImplementation(libs.androidx.ui.test.junit4)
+    testImplementation(libs.robolectric)
+    testImplementation(libs.roborazzi)
+    testImplementation(libs.roborazzi.compose)
 
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -16,29 +16,25 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-fun CounterButton(
-    onClickIncrement: () -> Unit,
-    onClickDecrement: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
+fun CounterButton(onClickIncrement: () -> Unit, onClickDecrement: () -> Unit, modifier: Modifier = Modifier) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.spacedBy(24.dp),
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
     ) {
         // 減少ボタン
         FilledIconButton(
             onClick = onClickDecrement,
             modifier = Modifier.size(64.dp),
             colors = IconButtonDefaults.filledIconButtonColors(
-                containerColor = MaterialTheme.colorScheme.secondaryContainer
+                containerColor = MaterialTheme.colorScheme.secondaryContainer,
             ),
 
-            ) {
+        ) {
             Icon(
                 imageVector = Icons.Filled.Remove,
                 contentDescription = "Decrement",
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(32.dp),
             )
         }
 
@@ -47,13 +43,13 @@ fun CounterButton(
             onClick = onClickIncrement,
             modifier = Modifier.size(64.dp),
             colors = IconButtonDefaults.filledIconButtonColors(
-                containerColor = MaterialTheme.colorScheme.primaryContainer
-            )
+                containerColor = MaterialTheme.colorScheme.primaryContainer,
+            ),
         ) {
             Icon(
                 imageVector = Icons.Filled.Add,
                 contentDescription = "Increment",
-                modifier = Modifier.size(32.dp)
+                modifier = Modifier.size(32.dp),
             )
         }
     }

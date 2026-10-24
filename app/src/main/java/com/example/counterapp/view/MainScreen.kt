@@ -13,18 +13,16 @@ import com.example.counterapp.view.counter.CounterScreen
 import com.example.counterapp.view.setting.SettingsScreen
 
 @Composable
-fun MainScreen(
-    modifier: Modifier = Modifier
-) {
+fun MainScreen(modifier: Modifier = Modifier) {
     val navController = rememberNavController()
     Scaffold(
         modifier = modifier,
-        bottomBar = { BottomNavigation(navController) }
+        bottomBar = { BottomNavigation(navController) },
     ) { paddingValues ->
         NavHost(
             navController,
             startDestination = NavItem.Counter.route,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
         ) {
             composable(NavItem.Counter.route) {
                 CounterScreen()

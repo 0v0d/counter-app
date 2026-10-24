@@ -12,9 +12,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor(
-    private val userDataRepository: UserDataRepository
-) : ViewModel() {
+class SettingsViewModel @Inject constructor(private val userDataRepository: UserDataRepository) : ViewModel() {
     private val _userConfig = MutableStateFlow(ThemeConfig.DEFAULT)
     val userConfig: StateFlow<ThemeConfig> = _userConfig.asStateFlow()
 

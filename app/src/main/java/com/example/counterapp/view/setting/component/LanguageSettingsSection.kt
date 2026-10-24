@@ -13,9 +13,7 @@ import androidx.core.os.LocaleListCompat
 import com.example.counterapp.R
 
 @Composable
-fun LanguageSettingsSection(
-    modifier: Modifier = Modifier
-) {
+fun LanguageSettingsSection(modifier: Modifier = Modifier) {
     val currentLanguageCode =
         AppCompatDelegate.getApplicationLocales().toLanguageTags()
 
@@ -27,14 +25,14 @@ fun LanguageSettingsSection(
             selected = currentLanguageCode == LanguageConfig.English.languageCode,
             onClick = {
                 updateLanguage(LanguageConfig.English.languageCode)
-            }
+            },
         )
         SettingsRadioButton(
             text = R.string.Japanese,
             selected = currentLanguageCode == LanguageConfig.Japanese.languageCode,
             onClick = {
                 updateLanguage(LanguageConfig.Japanese.languageCode)
-            }
+            },
         )
     }
 }

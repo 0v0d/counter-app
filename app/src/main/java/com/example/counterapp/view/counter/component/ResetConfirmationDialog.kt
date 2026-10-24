@@ -10,10 +10,7 @@ import com.example.counterapp.R
 import com.example.counterapp.ui.theme.CounterAppTheme
 
 @Composable
-fun ResetConfirmationDialog(
-    onConfirm: () -> Unit,
-    onDismiss: () -> Unit,
-) {
+fun ResetConfirmationDialog(onConfirm: () -> Unit, onDismiss: () -> Unit) {
     AlertDialog(
         onDismissRequest = onDismiss,
         title = { Text(stringResource(id = R.string.Confirm)) },
@@ -29,7 +26,7 @@ fun ResetConfirmationDialog(
             TextButton(onClick = onDismiss) {
                 Text(stringResource(id = R.string.Cancel))
             }
-        }
+        },
     )
 }
 
@@ -39,7 +36,7 @@ private fun Preview() {
     CounterAppTheme {
         ResetConfirmationDialog(
             onConfirm = {},
-            onDismiss = {}
+            onDismiss = {},
         )
     }
 }

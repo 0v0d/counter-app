@@ -101,7 +101,7 @@ class CounterAppE2ETest {
 
         // ダイアログ内のリセットボタン(画面上のリセットボタンと区別するためダイアログ内に限定)
         composeRule.onNode(
-            hasText(getString(R.string.Reset)) and hasAnyAncestor(isDialog())
+            hasText(getString(R.string.Reset)) and hasAnyAncestor(isDialog()),
         ).performClick()
 
         composeRule.onNodeWithText("0").assertIsDisplayed()

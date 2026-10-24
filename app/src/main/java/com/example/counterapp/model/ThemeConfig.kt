@@ -6,7 +6,8 @@ import kotlinx.serialization.Serializable
 enum class ThemeConfig {
     System,
     Light,
-    Dark;
+    Dark,
+    ;
 
     companion object {
         val DEFAULT = System

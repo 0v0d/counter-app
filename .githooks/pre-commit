@@ -1,15 +1,24 @@
 #!/bin/sh
-# コミット前に CI と同じ検査（detekt・Android Lint・UNIT）を実行する。
+# コミット前に ktlint で整形し、detekt・Android Lint・UNIT を実行する。
 # クローンごとに一度、またこのファイルを変更したときにコピーする:
 #   cp .githooks/pre-commit .git/hooks/pre-commit
 # core.hooksPath を使わずコピーするのは、コーディングエージェントが .githooks/ には
 # 書き込めても .git/hooks/ には書き込めず、コミット時に実行される内容を変えられないようにするため。
-# 一度だけ省略する: git commit --no-verify
 set -eu
 
 # ドキュメントのみなど、検査結果に影響しないコミットでは実行しない
-if ! git diff --cached --name-only | grep -qE '^(app/|config/detekt/|gradle/)|\.kts$|^gradle\.properties$'; then
+if ! git diff --cached --name-only | grep -qE '^(app/|config/detekt/|gradle/)|\.kts$|^gradle\.properties$|^\.editorconfig$|^\.githooks/pre-commit$'; then
   exit 0
+fi
+
+echo "pre-commit: ktlint でフォーマットします..."
+./gradlew ktlintFormat --quiet
+
+# 未ステージの変更を意図せずコミットに含めないよう、自動では git add しない
+if ! git diff --quiet -- '*.kt' '*.kts'; then
+  echo "pre-commit: Kotlin ファイルに未ステージの差分があります。"
+  echo "git diff で整形結果を確認し、必要な変更を git add してから再度コミットしてください。"
+  exit 1
 fi
 
 echo "pre-commit: detekt・Android Lint・UNIT を実行します..."

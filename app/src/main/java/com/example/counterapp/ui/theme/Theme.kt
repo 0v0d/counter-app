@@ -14,20 +14,20 @@ import com.example.counterapp.model.ThemeConfig
 private val DarkColorScheme = darkColorScheme(
     primary = Purple80,
     secondary = PurpleGrey80,
-    tertiary = Pink80
+    tertiary = Pink80,
 )
 
 private val LightColorScheme = lightColorScheme(
     primary = Purple40,
     secondary = PurpleGrey40,
-    tertiary = Pink40
+    tertiary = Pink40,
 )
 
 @Composable
 fun CounterAppTheme(
     themeConfig: ThemeConfig = ThemeConfig.System,
     dynamicColor: Boolean = true,
-    content: @Composable () -> Unit
+    content: @Composable () -> Unit,
 ) {
     val darkTheme = shouldUseDarkTheme(themeConfig)
     val colorScheme = when {
@@ -37,21 +37,20 @@ fun CounterAppTheme(
         }
 
         darkTheme -> DarkColorScheme
+
         else -> LightColorScheme
     }
 
     MaterialTheme(
         colorScheme = colorScheme,
         typography = Typography,
-        content = content
+        content = content,
     )
 }
 
 @Composable
-fun shouldUseDarkTheme(themeConfig: ThemeConfig): Boolean {
-    return when (themeConfig) {
-        ThemeConfig.System -> isSystemInDarkTheme()
-        ThemeConfig.Light -> false
-        ThemeConfig.Dark -> true
-    }
+fun shouldUseDarkTheme(themeConfig: ThemeConfig): Boolean = when (themeConfig) {
+    ThemeConfig.System -> isSystemInDarkTheme()
+    ThemeConfig.Light -> false
+    ThemeConfig.Dark -> true
 }

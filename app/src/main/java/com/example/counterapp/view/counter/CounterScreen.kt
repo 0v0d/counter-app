@@ -27,10 +27,7 @@ import com.example.counterapp.view.counter.component.ResetConfirmationDialog
 import com.example.counterapp.viewmodel.CounterViewModel
 
 @Composable
-fun CounterScreen(
-    modifier: Modifier = Modifier,
-    viewModel: CounterViewModel = hiltViewModel()
-) {
+fun CounterScreen(modifier: Modifier = Modifier, viewModel: CounterViewModel = hiltViewModel()) {
     val counter by viewModel.counter.collectAsStateWithLifecycle()
     var showResetConfirmation by remember { mutableStateOf(false) }
 
@@ -42,23 +39,23 @@ fun CounterScreen(
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(24.dp)
+            verticalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             // カウンターの表示
             Text(
                 text = counter.value.toString(),
                 style = MaterialTheme.typography.displayLarge,
-                color = MaterialTheme.colorScheme.primary
+                color = MaterialTheme.colorScheme.primary,
             )
 
             CounterButton(
                 onClickIncrement = { viewModel.increment() },
-                onClickDecrement = { viewModel.decrement() }
+                onClickDecrement = { viewModel.decrement() },
             )
 
             if (counter.value != 0) {
                 ResetButton(
-                    onClick = { showResetConfirmation = true }
+                    onClick = { showResetConfirmation = true },
                 )
             } else {
                 Spacer(modifier = Modifier.height(48.dp))
@@ -73,7 +70,7 @@ fun CounterScreen(
                 viewModel.reset()
                 showResetConfirmation = false
             },
-            onDismiss = { showResetConfirmation = false }
+            onDismiss = { showResetConfirmation = false },
         )
     }
 }

@@ -16,19 +16,19 @@ import com.example.counterapp.model.ThemeConfig
 fun SettingsContent(
     themeConfig: ThemeConfig,
     onChangeThemeConfig: (ThemeConfig) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier.padding(16.dp)) {
         Text(
             text = stringResource(id = R.string.Settings),
             style = MaterialTheme.typography.titleMedium,
-            fontStyle = MaterialTheme.typography.titleMedium.fontStyle
+            fontStyle = MaterialTheme.typography.titleMedium.fontStyle,
         )
         Spacer(modifier = Modifier.padding(8.dp))
 
         ThemeSettingsSection(
             currentTheme = themeConfig,
-            onChangeThemeConfig = onChangeThemeConfig
+            onChangeThemeConfig = onChangeThemeConfig,
         )
 
         Spacer(modifier = Modifier.padding(8.dp))

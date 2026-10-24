@@ -28,7 +28,7 @@ PR を作ると静的解析・UNIT・VRT・シークレット検査が走り、L
 | データ | DataStore Preferences、kotlinx.serialization |
 | デバッグ | LeakCanary |
 | テスト | JUnit 4、Robolectric、Roborazzi、Compose UI Test、AndroidX Test（JUnit・Espresso） |
-| 品質 | detekt、Android Lint、Kover |
+| 品質 | ktlint（ローカル整形）、detekt、Android Lint、Kover |
 | CI | GitHub Actions、reviewdog、jacoco-report、Gitleaks、Android Emulator Runner、Dependabot |
 
 対応 OS は Android 7.0（API 24）以上、`targetSdk` は 37 です。
@@ -88,7 +88,7 @@ flowchart LR
 ## ローカル開発
 
 JDK 21 と Android SDK（compileSdk 37.1）が必要です。
-クローン後、コミット前に detekt・Android Lint・UNIT を自動で実行する pre-commit フックを有効にしてください。
+クローン後、コミット前に ktlint の整形と detekt・Android Lint・UNIT を自動で実行する pre-commit フックを有効にしてください。
 
 ```sh
 cp .githooks/pre-commit .git/hooks/pre-commit
@@ -98,6 +98,7 @@ cp .githooks/pre-commit .git/hooks/pre-commit
 
 ```sh
 ./gradlew :app:installDebug                                  # 端末にインストール
+./gradlew ktlintFormat                                      # Kotlin・Gradle スクリプトを整形
 ./gradlew detekt :app:lintDebug                              # 静的解析
 ./gradlew :app:testDebugUnitTest --tests '*UnitTest'         # UNIT
 ./gradlew :app:testDebugUnitTest --tests '*UnitTest' :app:koverHtmlReportDebug  # カバレッジ（HTML）

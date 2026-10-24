@@ -15,7 +15,7 @@ import com.example.counterapp.model.ThemeConfig
 fun ThemeSettingsSection(
     currentTheme: ThemeConfig,
     onChangeThemeConfig: (ThemeConfig) -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
 ) {
     Column(modifier = modifier) {
         Text(text = stringResource(id = R.string.Theme))
@@ -23,17 +23,17 @@ fun ThemeSettingsSection(
         SettingsRadioButton(
             text = R.string.System,
             selected = currentTheme == ThemeConfig.System,
-            onClick = { onChangeThemeConfig(ThemeConfig.System) }
+            onClick = { onChangeThemeConfig(ThemeConfig.System) },
         )
         SettingsRadioButton(
             text = R.string.Light,
             selected = currentTheme == ThemeConfig.Light,
-            onClick = { onChangeThemeConfig(ThemeConfig.Light) }
+            onClick = { onChangeThemeConfig(ThemeConfig.Light) },
         )
         SettingsRadioButton(
             text = R.string.Dark,
             selected = currentTheme == ThemeConfig.Dark,
-            onClick = { onChangeThemeConfig(ThemeConfig.Dark) }
+            onClick = { onChangeThemeConfig(ThemeConfig.Dark) },
         )
     }
 }

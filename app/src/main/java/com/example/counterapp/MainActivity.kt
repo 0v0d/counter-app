@@ -41,11 +41,11 @@ class MainActivity : AppCompatActivity() {
             enableEdgeToEdge(
                 statusBarStyle = SystemBarStyle.auto(
                     Color.TRANSPARENT,
-                    Color.TRANSPARENT
+                    Color.TRANSPARENT,
                 ) { isDarkTheme },
                 navigationBarStyle = SystemBarStyle.auto(
                     lightScrim,
-                    darkScrim
+                    darkScrim,
                 ) { isDarkTheme },
             )
             CounterAppTheme(themeConfig = themeConfig) {
